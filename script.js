@@ -3,7 +3,7 @@ let dbUserFavFruit;
 let dbUserServing;
 let userEmail;
 let userPhotoURL;
-let userID;
+let uid;
 let userDisplayName;
 
 function fb_authenticate() {
@@ -15,7 +15,7 @@ function fb_authenticate() {
                 userDisplayName = user.displayName;
                 userEmail = user.email;
                 userPhotoURL = user.photoURL;
-                userID = user.uid;
+                uid = user.uid;
                 statusMessage.innerHTML = userDisplayName + "<br>" + userEmail + "<br>";
             }
         } else {
@@ -24,7 +24,7 @@ function fb_authenticate() {
             provider.addScope('profile');
             provider.addScope('email');
             firebase.auth().signInWithPopup(provider).then(function (result) {
-            var token = result.credential.accessToken;
+                var token = result.credential.accessToken;
             });
         }
     });
@@ -35,29 +35,33 @@ function fb_write() {
     let userFavFruit = document.getElementById('favoriteFruit').value
     let userServings = document.getElementById('fruitQuantity').value
     userServings = Number(userServings)
-    firebase.database().ref('/salStrawberry/Foods/' + userName).set(userFavFruit)
-    firebase.database().ref('/salStrawberry/Servings/' + userName).set(userServings)
-    statusMessage.innerHTML += userName+ " " + userFavFruit+ " " + userServings + " ";
+
+    firebase.database().ref('/salStrawberry/' + uid + "/Fruit").set(userFavFruit)
+    firebase.database().ref('/salStrawberry/' + uid + "/Servings").set(userServings)
+    firebase.database().ref('/salStrawberry/' + uid + "/Name").set(userName)
+
+    statusMessage.innerHTML += userName + " " + userFavFruit + " " + userServings + " ";
 
 }
 
 function generate_email() {
     console.log("Generate Email");
-    firebase.database().ref('/salStrawberry/Foods/'+ userName).once('value', readFavFruit, fb_readError)
-    firebase.database().ref('/salStrawberry/Servings/'+ userName).once('value', readUserServing, fb_readError)
+    firebase.database().ref('/salStrawberry/' + uid + "/Fruit").once('value', readFavFruit, fb_readError)
+    firebase.database().ref('/salStrawberry/' + uid + "/Servings").once('value', readUserServing, fb_readError)
 }
 
-function readFavFruit(snapshot){
+function readFavFruit(snapshot) {
     dbUserFavFruit = snapshot.val()
 }
 
-function readUserServing(snapshot){
+function readUserServing(snapshot) {
     dbUserServing = snapshot.val()
-    statusMessage.innerHTML = "From Sals Strawberry Saloon <br> To: "+ userEmail + "<br><br> Hello, "+ userName +"<br> This is Sal's Strawberry Saloon, reaching out to you about your recent addition to our mailing list. For new purchasers we are offring a deal on your favourite fruit: "+ dbUserFavFruit + ". <br> You can get " + dbUserServing + " servings per week for 100% more money! <br> Thanks for your time, Sals Strawberry Saloon"  ;
+    statusMessage.innerHTML = "From Sals Strawberry Saloon <br> To: " + userEmail + "<br><br> Hello, " + userName + "<br> This is Sal's Strawberry Saloon, reaching out to you about your recent addition to our mailing list. For new purchasers we are offring a deal on your favourite fruit: " + dbUserFavFruit + ". <br> You can get " + dbUserServing + " servings per week for 100% more money! <br> Thanks for your time, Sals Strawberry Saloon";
 }
 
 function view_fav_fruits() {
-    firebase.database().ref('/salStrawberry/Foods').orderByValue().once('value', displayFavFruits, fb_readError)
+    firebase.database().ref('/salStrawberry').orderByValue().once('value', displayFavFruits, fb_readError)
+    //Need to change
 }
 
 
@@ -66,6 +70,18 @@ function displayFavFruits(snapshot) {
     if (highScores == null) {
         console.log("There was no record when trying to read from the database!");
     } else {
+        let highScoreInfo = Object.values(highScores);
+        highScoreInfo.reverse(); //This line reverses the order so that when sorted it is biggest to smallest
+        for (i = 0; i < highScoreInfo.length; i++) {
+            let currentName = highScoreInfo[i].Name;
+            let currentScore = highScoreInfo[i].Fruit;
+            console.log("Score " + i + " is for " + currentName + ", with " + currentScore + " points. ");
+            //databaseOutput.innerHTML += "Score " + i + " is for " + currentName + ", with " + currentScore + " points. " + "<br>";
+        }
+
+
+
+        /*
         let target;
         var fruitFrequency = [];
         sortedArrayKey = [];
@@ -88,15 +104,16 @@ function displayFavFruits(snapshot) {
             statusMessage.innerHTML += fruitFrequency[i] + "<br>";
         }
 
+    }*/
     }
 }
 
-function addToArray(child) {
-    sortedArrayVal.push(child.val())
-    sortedArrayKey.push(child.key)
-}
+    function addToArray(child) {
+        sortedArrayVal.push(child.val())
+        sortedArrayKey.push(child.key)
+    }
 
-function fb_readError(error) {
-    console.log("There was an error reading this message!")
-    console.error(error);
-}
+    function fb_readError(error) {
+        console.log("There was an error reading this message!")
+        console.error(error);
+    }
