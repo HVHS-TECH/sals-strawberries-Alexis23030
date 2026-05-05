@@ -20,11 +20,11 @@ function fb_authenticate() {
             }
         } else {
             statusMessage.innerHTML = "Not Logged In";
-            var provider = new firebase.auth.GoogleAuthProvider();
+            let provider = new firebase.auth.GoogleAuthProvider();
             provider.addScope('profile');
             provider.addScope('email');
             firebase.auth().signInWithPopup(provider).then(function (result) {
-                var token = result.credential.accessToken;
+                let token = result.credential.accessToken;
             });
         }
     });
@@ -60,60 +60,37 @@ function readUserServing(snapshot) {
 }
 
 function view_fav_fruits() {
-    firebase.database().ref('/salStrawberry').orderByValue().once('value', displayFavFruits, fb_readError)
-    //Need to change
+    firebase.database().ref('/salStrawberry').once('value', displayFavFruits, fb_readError)
 }
 
 
 function displayFavFruits(snapshot) {
-    var highScores = snapshot.val();
-    if (highScores == null) {
+    let fruitFrequency = [];
+    let message = [];
+    let favFruits = snapshot.val();
+    if (favFruits == null) {
         console.log("There was no record when trying to read from the database!");
     } else {
-        let highScoreInfo = Object.values(highScores);
-        highScoreInfo.reverse(); //This line reverses the order so that when sorted it is biggest to smallest
-        for (i = 0; i < highScoreInfo.length; i++) {
-            let currentName = highScoreInfo[i].Name;
-            let currentScore = highScoreInfo[i].Fruit;
-            console.log("Score " + i + " is for " + currentName + ", with " + currentScore + " points. ");
-            //databaseOutput.innerHTML += "Score " + i + " is for " + currentName + ", with " + currentScore + " points. " + "<br>";
-        }
-
-
-
-        /*
-        let target;
-        var fruitFrequency = [];
-        sortedArrayKey = [];
-        sortedArrayVal = [];
-        snapshot.forEach(addToArray);
-        sortedArrayVal.reverse();
-        sortedArrayKey.reverse();
-        let obj = Object.fromEntries(sortedArrayKey.map((key, index) => [key, sortedArrayVal[index]]));
-        let names = Object.keys(obj);
-
-        for (i = 0; i < names.length; i++) {
-            target = highScores[names[i]];
-            const count = Object.values(highScores).filter(val => val === target).length;
-            if (!fruitFrequency.includes(target + ": " + count)) {
-                fruitFrequency.push(target + ": " + count);
-            }
+        let favFruitInfo = Object.values(favFruits);
+        console.log(favFruitInfo);
+        for (i = 0; i < favFruitInfo.length; i++) {
+            let currentFruit = favFruitInfo[i].Fruit;
+            fruitFrequency.push(currentFruit);
         }
 
         for (i = 0; i < fruitFrequency.length; i++) {
-            statusMessage.innerHTML += fruitFrequency[i] + "<br>";
+            const count = fruitFrequency.filter(item => item === fruitFrequency[i]).length; 
+            console.log(fruitFrequency[i] + " : " + count);
+            if (!message.includes(fruitFrequency[i] + " : " + count)){
+            message.push(fruitFrequency[i] + " : " + count) + "<br>";
+            console.log(message)
+            }
+            statusMessage.innerHTML = message;
         }
-
-    }*/
     }
 }
 
-    function addToArray(child) {
-        sortedArrayVal.push(child.val())
-        sortedArrayKey.push(child.key)
-    }
-
-    function fb_readError(error) {
-        console.log("There was an error reading this message!")
-        console.error(error);
-    }
+function fb_readError(error) {
+    console.log("There was an error reading this message!")
+    console.error(error);
+}
