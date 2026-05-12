@@ -44,25 +44,20 @@ function fb_write() {
 
 }
 
-function generate_email() {
+async function generate_email() {
     console.log("Generate Email");
-    firebase.database().ref('/salStrawberry/' + uid + "/Fruit").once('value', readFavFruit, fb_readError)
-    firebase.database().ref('/salStrawberry/' + uid + "/Servings").once('value', readUserServing, fb_readError)
+    dbUserFavFruit = await firebase.database().ref('/salStrawberry/' + uid + "/Fruit").once('value')
+    dbUserServing = await firebase.database().ref('/salStrawberry/' + uid + "/Servings").once('value')
+
+    statusMessage.innerHTML = "From Sals Strawberry Saloon <br> To: " + userEmail + "<br><br> Hello, " + userName + "<br> This is Sal's Strawberry Saloon, reaching out to you about your recent addition to our mailing list. For new purchasers we are offring a deal on your favourite fruit: " + dbUserFavFruit.val() + ". <br> You can get " + dbUserServing.val() + " servings per week for 100% more money! <br> Thanks for your time, Sals Strawberry Saloon";
+
 }
 
-function readFavFruit(snapshot) {
-    dbUserFavFruit = snapshot.val()
-}
 
-function readUserServing(snapshot) {
-    dbUserServing = snapshot.val()
-    statusMessage.innerHTML = "From Sals Strawberry Saloon <br> To: " + userEmail + "<br><br> Hello, " + userName + "<br> This is Sal's Strawberry Saloon, reaching out to you about your recent addition to our mailing list. For new purchasers we are offring a deal on your favourite fruit: " + dbUserFavFruit + ". <br> You can get " + dbUserServing + " servings per week for 100% more money! <br> Thanks for your time, Sals Strawberry Saloon";
-}
 
-function view_fav_fruits() {
+function viewFavFruits() {
     firebase.database().ref('/salStrawberry').once('value', displayFavFruits, fb_readError)
 }
-
 
 function displayFavFruits(snapshot) {
     let fruitFrequency = [];
