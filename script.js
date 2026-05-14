@@ -61,7 +61,10 @@ async function fb_write() {
     let userServings = document.getElementById('fruitQuantity').value
     let userReview = document.getElementById('review').value
     userServings = Number(userServings)
-
+    if (userFavFruit == "" || user2Fruit == "" || user3Fruit == "" || userServings == "" || userReview == ""){
+        statusMessage.innerHTML = "YOU NEED TO INPUT VALUES IN ALL FIELDS"
+        
+    } else {
     firebase.database().ref('/salStrawberry/' + uid + "/Fruit").set(userFavFruit)
     firebase.database().ref('/salStrawberry/' + uid + "/2Fruit").set(user2Fruit)
     firebase.database().ref('/salStrawberry/' + uid + "/3Fruit").set(user3Fruit)
@@ -70,19 +73,7 @@ async function fb_write() {
     firebase.database().ref('/salStrawberry/' + uid + "/Name").set(userName)
     firebase.database().ref('/salStrawberry/' + uid + "/Photo").set(userPhotoURL)
     document.getElementById("emailButton").hidden = false;
-
-    /*statusMessage.innerHTML = "Now you have given us ur info, here are the reviews: <br>";
-    snapshot = await firebase.database().ref('/reviews').once('value')
-    let reviews = snapshot.val();
-    if (reviews == null) {
-        console.log("There was no record when trying to read from the database!");
-    } else {
-        let reviewsValues = Object.values(reviews);
-        for(i=0; i<reviewsValues.length; i++){
-        statusMessage.innerHTML += reviewsValues[i] + "<br>";
-        console.log(reviewsValues[i])
-        }
-    }*/
+    }
 }
 
 async function generate_email() {
