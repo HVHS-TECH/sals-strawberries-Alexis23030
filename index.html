@@ -22,9 +22,9 @@
     <h1>Sal’s Strawberry Saloon</h1>
     <h2>(and other fruit products)</h2>
 
-    <button onclick="fb_authenticate()">Login with Google</button>
-    <button onclick="generate_email()">Generate Email</button>
-    <button onclick="viewFavFruits()">View Favourite Fruits</button>
+    <button onclick="fb_authenticate()" id="loginButton">Login with Google</button>
+    <button onclick="generate_email()" id="emailButton">Generate Email</button>
+    <button onclick="viewFavFruits()" id="viewFavFruitsButton">View Favourite Fruits</button>
 
     <form id="fruitForm">
       <label for="name">Your Name:</label>
@@ -46,7 +46,7 @@
       <input type="text" id="review" name="review" />
     </form>
 
-    <button onclick="fb_write()">Submit</button>
+    <button onclick="fb_write()" id="writeButton">Submit</button>
 
     <p id="statusMessage"></p>
   </div>

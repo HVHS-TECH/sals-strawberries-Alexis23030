@@ -5,8 +5,12 @@ let userEmail;
 let userPhotoURL;
 let uid;
 let userDisplayName;
+document.getElementById("emailButton").hidden = true;
+document.getElementById("viewFavFruitsButton").hidden = true;
+document.getElementById("writeButton").hidden = true;
 
-function fb_authenticate() {
+
+async function fb_authenticate() {
     let user;
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
@@ -17,6 +21,11 @@ function fb_authenticate() {
                 userPhotoURL = user.photoURL;
                 uid = user.uid;
                 statusMessage.innerHTML = userDisplayName + "<br>" + userEmail + "<br>" + "<img src=" + userPhotoURL + " alt='Photo' width='100' height='100' style ='border-radius:60px'>";
+                document.getElementById("viewFavFruitsButton").hidden = false;
+                document.getElementById("writeButton").hidden = false;
+                document.getElementById("loginButton").hidden = true;
+                firebase.database().ref('/reviews').once('value', displayReviews)
+
             }
         } else {
             statusMessage.innerHTML = "Not Logged In";
@@ -30,6 +39,20 @@ function fb_authenticate() {
     });
 }
 
+function displayReviews(snapshot) {
+    let reviews = snapshot.val();
+    statusMessage.innerHTML += "<br> <h2>Reviews:</h2>";
+    if (reviews == null) {
+        console.log("There was no record when trying to read from the database!");
+    } else {
+        let reviewsValues = Object.values(reviews);
+        for (i = 0; i < reviewsValues.length; i++) {
+            statusMessage.innerHTML += "<br>" + reviewsValues[i] ;
+            console.log(reviewsValues[i])
+        }
+    }
+
+}
 async function fb_write() {
     userName = document.getElementById('name').value
     let userFavFruit = document.getElementById('favoriteFruit').value
@@ -46,12 +69,10 @@ async function fb_write() {
     firebase.database().ref('/salStrawberry/' + uid + "/Servings").set(userServings)
     firebase.database().ref('/salStrawberry/' + uid + "/Name").set(userName)
     firebase.database().ref('/salStrawberry/' + uid + "/Photo").set(userPhotoURL)
+    document.getElementById("emailButton").hidden = false;
 
-
-    statusMessage.innerHTML = "Now you have given us ur info, here are the reviews: <br>";
+    /*statusMessage.innerHTML = "Now you have given us ur info, here are the reviews: <br>";
     snapshot = await firebase.database().ref('/reviews').once('value')
-    let fruitFrequency = [];
-    let message = [];
     let reviews = snapshot.val();
     if (reviews == null) {
         console.log("There was no record when trying to read from the database!");
@@ -61,7 +82,7 @@ async function fb_write() {
         statusMessage.innerHTML += reviewsValues[i] + "<br>";
         console.log(reviewsValues[i])
         }
-    }
+    }*/
 }
 
 async function generate_email() {
@@ -71,8 +92,8 @@ async function generate_email() {
     dbUser3Fruit = await firebase.database().ref('/salStrawberry/' + uid + "/3Fruit").once('value')
     dbUserServing = await firebase.database().ref('/salStrawberry/' + uid + "/Servings").once('value')
 
-    statusMessage.innerHTML = 
-    `From Sals Strawberry Saloon <br> To: ${userEmail}<br><br> Hello, ${userName} 
+    statusMessage.innerHTML =
+        `From Sals Strawberry Saloon <br> To: ${userEmail}<br><br> Hello, ${userName} 
     <br> This is Sal's Strawberry Saloon, reaching out to you about your recent addition to our mailing list. 
     For new purchasers we are offring a deal on your favourite fruit: ${dbUserFavFruit.val()}, or 
     ${dbUser2Fruit.val()}, or ${dbUser3Fruit.val()}. You can get ${dbUserServing.val()} servings 
@@ -94,11 +115,11 @@ async function viewFavFruits() {
         }
 
         for (i = 0; i < fruitFrequency.length; i++) {
-            const count = fruitFrequency.filter(item => item === fruitFrequency[i]).length; 
+            const count = fruitFrequency.filter(item => item === fruitFrequency[i]).length;
             console.log(fruitFrequency[i] + " : " + count);
-            if (!message.includes(fruitFrequency[i] + " : " + count)){
-            message.push(fruitFrequency[i] + " : " + count) + "<br>";
-            console.log(message)
+            if (!message.includes(fruitFrequency[i] + " : " + count)) {
+                message.push(fruitFrequency[i] + " : " + count) + "<br>";
+                console.log(message)
             }
             statusMessage.innerHTML = message;
         }
