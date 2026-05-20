@@ -20,7 +20,8 @@ async function fb_authenticate() {
                 userEmail = user.email;
                 userPhotoURL = user.photoURL;
                 uid = user.uid;
-                statusMessage.innerHTML = userDisplayName + "<br>" + userEmail + "<br>" + "<img src=" + userPhotoURL + " alt='Photo' width='100' height='100' style ='border-radius:60px'>";
+                profileinfo.innerHTML = userDisplayName + "<br>" + userEmail + "<br>" 
+                profile.innerHTML = "<img src=" + userPhotoURL + " alt='Photo' width='100' height='100' style ='border-radius:60px'>";
                 document.getElementById("viewFavFruitsButton").hidden = false;
                 document.getElementById("writeButton").hidden = false;
                 document.getElementById("loginButton").hidden = true;
@@ -108,8 +109,8 @@ async function viewFavFruits() {
         for (i = 0; i < fruitFrequency.length; i++) {
             const count = fruitFrequency.filter(item => item === fruitFrequency[i]).length;
             console.log(fruitFrequency[i] + " : " + count);
-            if (!message.includes(fruitFrequency[i] + " : " + count)) {
-                message.push(fruitFrequency[i] + " : " + count) + "<br>";
+            if (!message.includes(fruitFrequency[i] + ": "+ count +" <br> " )) {
+                message.push(fruitFrequency[i] + ": "+ count +" <br> " ) + "<br>";
                 console.log(message)
             }
             statusMessage.innerHTML = message;

@@ -1,6 +1,6 @@
 body {
-  background-color: #ffe6eb;
-  color: #8b0000;
+  background-color: #b3cde0;
+  color: #011f4b;
   font-family: Arial, sans-serif;
   padding: 2rem;
 }
@@ -8,20 +8,20 @@ body {
 .container {
   max-width: 600px;
   margin: auto;
-  background-color: #fff0f5;
+  background-color: #b3cde0;
   padding: 2rem;
   border-radius: 12px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
-  color: pink;
+  color: #03396c;
   font-size: 2.5rem;
   margin-bottom: 0;
 }
 
 h2 {
-  color: #8b0000;
+  color: #011f4b;
   font-size: 1.2rem;
   margin-top: 0.2rem;
 }
@@ -42,7 +42,7 @@ input {
 button {
   margin-top: 1.5rem;
   padding: 0.7rem 1.2rem;
-  background-color: #ff5c8d;
+  background-color: #03396c;
   color: white;
   border: none;
   border-radius: 6px;
@@ -50,10 +50,23 @@ button {
 }
 
 button:hover {
-  background-color: #e64a74;
+  background-color: #011f4b;
 }
 
 #statusMessage {
   margin-top: 1rem;
   font-style: italic;
+}
+
+.profile {
+  /*background-color: #005b96;*/
+  height: 100px;
+  width: 100px;
+}
+.profilebanner {
+  background-color: #005b96;
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  height: 100px;
 }
