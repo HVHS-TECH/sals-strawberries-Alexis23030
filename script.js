@@ -52,8 +52,8 @@ function displayReviews(snapshot) {
             console.log(reviewsValues[i])
         }
     }
-
 }
+
 async function fb_write() {
     userName = document.getElementById('name').value
     let userFavFruit = document.getElementById('favoriteFruit').value
@@ -63,8 +63,7 @@ async function fb_write() {
     let userReview = document.getElementById('review').value
     userServings = Number(userServings)
     if (userFavFruit == "" || user2Fruit == "" || user3Fruit == "" || userServings == "" || userReview == ""){
-        statusMessage.innerHTML = "YOU NEED TO INPUT VALUES IN ALL FIELDS"
-        
+        statusMessage.innerHTML = "YOU NEED TO INPUT VALUES IN ALL FIELDS"      
     } else {
     firebase.database().ref('/salStrawberry/' + uid + "/Fruit").set(userFavFruit)
     firebase.database().ref('/salStrawberry/' + uid + "/2Fruit").set(user2Fruit)
